@@ -37,7 +37,7 @@ app.get('/todos/:id', (req, res) => {
 	if (!ObjectId.isValid(id)) {
 		return res.status(404).send();
 	};
-	Todo.find({ _id: id }).then((todo) => {
+	Todo.findById({ _id: id }).then((todo) => {
 		if (!todo) {
 			return res.status(404).send();
 		};
