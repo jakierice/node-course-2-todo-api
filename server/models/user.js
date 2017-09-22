@@ -52,10 +52,20 @@ UserSchema.methods.generateAuthToken = function () {
 	});
 };
 
+UserSchema.methods.removeToken = function (token) {
+	var user = this;
+
+	return user.update({
+		$pull: {
+			tokens: { token }
+		}
+	});
+};
+
 UserSchema.statics.findByToken = function (token) {
 	var User = this;
 	var decoded;
-	
+
 	try {
 		decoded = jwt.verify(token, 'abc123')
 	} catch (e) {
@@ -72,7 +82,7 @@ UserSchema.statics.findByToken = function (token) {
 UserSchema.statics.findByCredentials = function (email, password) {
 	var User = this;
 
-	return User.findOne({email}).then((user) => {
+	return User.findOne({ email }).then((user) => {
 		if (!user) {
 			return Promise.reject();
 		}
@@ -90,7 +100,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
 	});
 };
 
-UserSchema.pre('save', function(next)  {
+UserSchema.pre('save', function (next) {
 	var user = this;
 
 	if (user.isModified('password')) {
